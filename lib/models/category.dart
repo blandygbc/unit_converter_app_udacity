@@ -2,14 +2,16 @@ import 'package:flutter/material.dart';
 
 class Category extends StatelessWidget {
   static const _rowHeight = 100.0;
-  static const _borderRadius = 50.0;
+  static const _iconSize = 60.0;
+  static const _categoryNameSize = 24.0;
+  final _borderRadius = BorderRadius.circular(_rowHeight / 2);
   final categoryIcon;
   final categoryColor;
   final inkHighlightColor;
   final inkSplashColor;
   final String categoryName;
 
-  const Category({
+  Category({
     Key? key,
     required this.categoryIcon,
     required this.categoryColor,
@@ -23,12 +25,12 @@ class Category extends StatelessWidget {
     assert(debugCheckHasMaterial(context));
     return Material(
       color: Colors.transparent,
-      child: Container(
+      child: SizedBox(
         height: _rowHeight,
         child: Padding(
           padding: const EdgeInsets.all(8.0),
           child: InkWell(
-            borderRadius: BorderRadius.circular(_borderRadius),
+            borderRadius: _borderRadius,
             highlightColor: inkHighlightColor,
             splashColor: inkSplashColor,
             onTap: () {
@@ -41,7 +43,7 @@ class Category extends StatelessWidget {
                   padding: const EdgeInsets.all(16.0),
                   child: Icon(
                     categoryIcon,
-                    size: 60.0,
+                    size: _iconSize,
                   ),
                 ),
                 Center(
@@ -50,7 +52,7 @@ class Category extends StatelessWidget {
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     color: Colors.grey[700],
-                    fontSize: 24,
+                    fontSize: _categoryNameSize,
                     fontWeight: FontWeight.w700,
                   ),
                 )),

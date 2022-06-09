@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+// TODO: Check if we need to import anything
+
+// TODO: Define any constants
 
 class CategoryScreen extends StatelessWidget {
   const CategoryScreen({Key? key}) : super(key: key);
