@@ -2,6 +2,40 @@ import 'package:flutter/material.dart';
 // TODO: Check if we need to import anything
 
 // TODO: Define any constants
+final _categories = <Widget>[
+  ListTile(
+    leading: const Icon(Icons.cake),
+    title: Text(CategoryScreen._categoryNames[0]),
+  ),
+  ListTile(
+    leading: const Icon(Icons.cake),
+    title: Text(CategoryScreen._categoryNames[1]),
+  ),
+  ListTile(
+    leading: const Icon(Icons.cake),
+    title: Text(CategoryScreen._categoryNames[2]),
+  ),
+  ListTile(
+    leading: const Icon(Icons.cake),
+    title: Text(CategoryScreen._categoryNames[3]),
+  ),
+  ListTile(
+    leading: const Icon(Icons.cake),
+    title: Text(CategoryScreen._categoryNames[4]),
+  ),
+  ListTile(
+    leading: const Icon(Icons.cake),
+    title: Text(CategoryScreen._categoryNames[5]),
+  ),
+  ListTile(
+    leading: const Icon(Icons.cake),
+    title: Text(CategoryScreen._categoryNames[6]),
+  ),
+  ListTile(
+    leading: const Icon(Icons.cake),
+    title: Text(CategoryScreen._categoryNames[7]),
+  ),
+];
 
 class CategoryScreen extends StatelessWidget {
   const CategoryScreen({Key? key}) : super(key: key);
@@ -30,8 +64,8 @@ class CategoryScreen extends StatelessWidget {
   Widget _buildCategoryWidgets(bool portrait) {
     if (portrait) {
       return ListView.builder(
-        itemBuilder: (BuildContext context, int index) => _categories[index],
         itemCount: _categories.length,
+        itemBuilder: (BuildContext context, int index) => _categories[index],
       );
     } else {
       return GridView.count(
@@ -49,7 +83,7 @@ class CategoryScreen extends StatelessWidget {
     // Category. We'll add custom icons later.
 
     // TODO: Create a list view of the Categories
-    final listView = Container();
+    final listView = _buildCategoryWidgets(false);
 
     // TODO: Create an App Bar
     final appBar = AppBar(
