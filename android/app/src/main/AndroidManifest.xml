@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.unity_converter_app_udacity">
    <application
-        android:label="unity_converter_app_udacity"
+        android:label="unit_converter_app_udacity"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity

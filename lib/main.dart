@@ -1,46 +1,11 @@
 import 'package:flutter/material.dart';
-
-import 'category.dart';
+import 'package:unity_converter_app_udacity/views/category_screen.dart';
 
 const _padding = EdgeInsets.all(16);
 
 void main() {
-  runApp(MaterialApp(
+  runApp(const MaterialApp(
     debugShowCheckedModeBanner: false,
-    home: Scaffold(
-      backgroundColor: Colors.green[100],
-      appBar: AppBar(
-        title: Text("Unit Converter"),
-      ),
-      body: Center(
-        child: Category(
-          categoryIcon: Icons.home,
-          categoryName: "Home",
-          categoryColor: Colors.black54,
-          inkHighlightColor: Colors.blueAccent,
-          inkSplashColor: Colors.blue,
-        ),
-      ),
-    ),
+    home: CategoryScreen(),
   ));
-}
-
-class HelloRectangle extends StatelessWidget {
-  Widget build(BuildContext context) {
-    return Center(
-      child: Container(
-        padding: _padding,
-        color: Colors.greenAccent,
-        height: 400,
-        width: 300,
-        child: Center(
-          child: Text(
-            "Hello!",
-            style: TextStyle(fontSize: 40),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      ),
-    );
-  }
 }
