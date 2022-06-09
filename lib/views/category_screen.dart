@@ -50,7 +50,7 @@ class CategoryScreen extends StatelessWidget {
 
     // TODO: Create an App Bar
     final appBar = AppBar(
-      title: Text("Unit Converter"),
+      title: const Text("Unit Converter"),
     );
 
     return Scaffold(
