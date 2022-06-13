@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:unit_converter_app_udacity/models/unit.dart';
 
-class ConverterScreen extends StatelessWidget {
+class ConverterScreen extends StatefulWidget {
   /// Units for this [Category].
   final List<Unit> units;
   final color;
@@ -13,10 +13,15 @@ class ConverterScreen extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  State<ConverterScreen> createState() => _ConverterScreenState();
+}
+
+class _ConverterScreenState extends State<ConverterScreen> {
+  @override
   Widget build(BuildContext context) {
-    final unitWidgets = units.map((Unit unit) {
+    final unitWidgets = widget.units.map((Unit unit) {
       return Container(
-        color: color,
+        color: widget.color,
         margin: const EdgeInsets.all(8.0),
         padding: const EdgeInsets.all(16.0),
         child: Column(

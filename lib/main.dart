@@ -1,11 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:unit_converter_app_udacity/views/category_screen.dart';
 
-const _padding = EdgeInsets.all(16);
-
-void main() {
-  runApp(const UnitConverterApp());
-}
+void main() => runApp(const UnitConverterApp());
 
 class UnitConverterApp extends StatelessWidget {
   const UnitConverterApp({Key? key}) : super(key: key);

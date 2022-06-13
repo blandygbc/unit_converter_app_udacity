@@ -4,8 +4,15 @@ import 'package:unit_converter_app_udacity/models/unit.dart';
 
 final _backgroundColor = Colors.green.shade100;
 
-class CategoryScreen extends StatelessWidget {
+class CategoryScreen extends StatefulWidget {
   const CategoryScreen({Key? key}) : super(key: key);
+
+  @override
+  State<CategoryScreen> createState() => _CategoryScreenState();
+}
+
+class _CategoryScreenState extends State<CategoryScreen> {
+  final _categories = <Category>[];
 
   static const _categoryNames = <String>[
     'Length',
@@ -28,23 +35,33 @@ class CategoryScreen extends StatelessWidget {
     Colors.purpleAccent,
     Colors.red,
   ];
-  Widget _buildCategoryWidgets(List<Widget> categories) {
-    // if (portrait) {
-    //   return ListView.builder(
-    //     itemCount: _categories.length,
-    //     itemBuilder: (BuildContext context, int index) => _categories[index],
-    //   );
-    // } else {
-    //   return GridView.count(
-    //     crossAxisCount: 2,
-    //     childAspectRatio: 3.0,
-    //     children: _categories,
-    //   );
-    // }
-    return ListView.builder(
-      itemCount: categories.length,
-      itemBuilder: (BuildContext context, int index) => categories[index],
-    );
+
+  @override
+  void initState() {
+    super.initState();
+    for (var i = 0; i < _categoryNames.length; i++) {
+      _categories.add(Category(
+        categoryName: _categoryNames[i],
+        categoryColor: _baseColors[i],
+        categoryIcon: Icons.cake,
+        unitList: _retrieveUnitList(_categoryNames[i]),
+      ));
+    }
+  }
+
+  Widget _buildCategoryWidgets(bool portrait) {
+    if (portrait) {
+      return ListView.builder(
+        itemCount: _categories.length,
+        itemBuilder: (BuildContext context, int index) => _categories[index],
+      );
+    } else {
+      return GridView.count(
+        crossAxisCount: 2,
+        childAspectRatio: 3.0,
+        children: _categories,
+      );
+    }
   }
 
   /// Returns a list of mock [Unit]s.
@@ -60,21 +77,10 @@ class CategoryScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final categories = <Category>[];
-
-    for (var i = 0; i < _categoryNames.length; i++) {
-      categories.add(Category(
-        categoryName: _categoryNames[i],
-        categoryColor: _baseColors[i],
-        categoryIcon: Icons.cake,
-        unitList: _retrieveUnitList(_categoryNames[i]),
-      ));
-    }
-
     final listView = Container(
       color: _backgroundColor,
       padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: _buildCategoryWidgets(categories),
+      child: _buildCategoryWidgets(true),
     );
 
     final appBar = AppBar(
