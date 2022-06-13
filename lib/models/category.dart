@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:unit_converter_app_udacity/models/unit.dart';
+import 'package:unit_converter_app_udacity/views/converter_screen.dart';
 
 class Category extends StatelessWidget {
   static const _rowHeight = 100.0;
@@ -7,18 +9,42 @@ class Category extends StatelessWidget {
   final _borderRadius = BorderRadius.circular(_rowHeight / 2);
   final categoryIcon;
   final categoryColor;
-  final inkHighlightColor;
-  final inkSplashColor;
+  // final inkHighlightColor;
+  // final inkSplashColor;
   final String categoryName;
+  final List<Unit> unitList;
 
   Category({
     Key? key,
     required this.categoryIcon,
     required this.categoryColor,
-    this.inkHighlightColor,
-    this.inkSplashColor,
+    // this.inkHighlightColor,
+    // this.inkSplashColor,
     required this.categoryName,
+    required this.unitList,
   }) : super(key: key);
+
+  /// Navigates to the [ConverterRoute].
+  void _navigateToConverter(BuildContext context) {
+    Navigator.of(context).push(MaterialPageRoute<void>(
+      builder: (BuildContext context) {
+        return Scaffold(
+          appBar: AppBar(
+            title: Text(
+              categoryName,
+              style: Theme.of(context).textTheme.headline5,
+            ),
+            centerTitle: true,
+            backgroundColor: categoryColor,
+          ),
+          body: ConverterScreen(
+            color: categoryColor,
+            units: unitList,
+          ),
+        );
+      },
+    ));
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,15 +53,13 @@ class Category extends StatelessWidget {
       color: Colors.transparent,
       child: SizedBox(
         height: _rowHeight,
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: InkWell(
-            borderRadius: _borderRadius,
-            highlightColor: inkHighlightColor,
-            splashColor: inkSplashColor,
-            onTap: () {
-              print("I was tapped!");
-            },
+        child: InkWell(
+          borderRadius: _borderRadius,
+          highlightColor: categoryColor,
+          splashColor: categoryColor,
+          onTap: () => _navigateToConverter(context),
+          child: Padding(
+            padding: const EdgeInsets.all(8.0),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:unit_converter_app_udacity/models/category.dart';
+import 'package:unit_converter_app_udacity/models/unit.dart';
 
 final _backgroundColor = Colors.green.shade100;
 
@@ -46,6 +47,17 @@ class CategoryScreen extends StatelessWidget {
     );
   }
 
+  /// Returns a list of mock [Unit]s.
+  List<Unit> _retrieveUnitList(String categoryName) {
+    return List.generate(10, (int i) {
+      i += 1;
+      return Unit(
+        name: '$categoryName Unit $i',
+        conversion: i.toDouble(),
+      );
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final categories = <Category>[];
@@ -55,6 +67,7 @@ class CategoryScreen extends StatelessWidget {
         categoryName: _categoryNames[i],
         categoryColor: _baseColors[i],
         categoryIcon: Icons.cake,
+        unitList: _retrieveUnitList(_categoryNames[i]),
       ));
     }
 
