@@ -5,12 +5,9 @@ import 'package:unit_converter_app_udacity/views/converter_screen.dart';
 class Category extends StatelessWidget {
   static const _rowHeight = 100.0;
   static const _iconSize = 60.0;
-  static const _categoryNameSize = 24.0;
   final _borderRadius = BorderRadius.circular(_rowHeight / 2);
-  final categoryIcon;
-  final categoryColor;
-  // final inkHighlightColor;
-  // final inkSplashColor;
+  final IconData categoryIcon;
+  final ColorSwatch categoryColor;
   final String categoryName;
   final List<Unit> unitList;
 
@@ -18,8 +15,6 @@ class Category extends StatelessWidget {
     Key? key,
     required this.categoryIcon,
     required this.categoryColor,
-    // this.inkHighlightColor,
-    // this.inkSplashColor,
     required this.categoryName,
     required this.unitList,
   }) : super(key: key);
@@ -32,11 +27,12 @@ class Category extends StatelessWidget {
           appBar: AppBar(
             title: Text(
               categoryName,
-              style: Theme.of(context).textTheme.headline5,
+              style: Theme.of(context).textTheme.headline4,
             ),
             centerTitle: true,
             backgroundColor: categoryColor,
           ),
+          resizeToAvoidBottomInset: false,
           body: ConverterScreen(
             color: categoryColor,
             units: unitList,
@@ -48,15 +44,14 @@ class Category extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    assert(debugCheckHasMaterial(context));
     return Material(
       color: Colors.transparent,
       child: SizedBox(
         height: _rowHeight,
         child: InkWell(
           borderRadius: _borderRadius,
-          highlightColor: categoryColor,
-          splashColor: categoryColor,
+          highlightColor: categoryColor['highlight'],
+          splashColor: categoryColor['splashColor'],
           onTap: () => _navigateToConverter(context),
           child: Padding(
             padding: const EdgeInsets.all(8.0),
@@ -74,11 +69,7 @@ class Category extends StatelessWidget {
                     child: Text(
                   categoryName,
                   textAlign: TextAlign.center,
-                  style: TextStyle(
-                    color: Colors.grey[700],
-                    fontSize: _categoryNameSize,
-                    fontWeight: FontWeight.w700,
-                  ),
+                  style: Theme.of(context).textTheme.headline5,
                 )),
               ],
             ),
