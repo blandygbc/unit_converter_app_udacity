@@ -1,21 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:unit_converter_app_udacity/models/category.dart';
 import 'package:unit_converter_app_udacity/models/unit.dart';
 
-class ConverterScreen extends StatefulWidget {
-  final List<Unit> units;
-  final Color color;
+class UnitConverterScreen extends StatefulWidget {
+  final Category category;
 
-  const ConverterScreen({
-    required this.units,
-    required this.color,
+  const UnitConverterScreen({
     Key? key,
+    required this.category,
   }) : super(key: key);
 
   @override
-  State<ConverterScreen> createState() => _ConverterScreenState();
+  State<UnitConverterScreen> createState() => _UnitConverterScreenState();
 }
 
-class _ConverterScreenState extends State<ConverterScreen> {
+class _UnitConverterScreenState extends State<UnitConverterScreen> {
   Unit? _fromValue;
   Unit? _toValue;
   double? _inputValue;
@@ -32,10 +31,18 @@ class _ConverterScreenState extends State<ConverterScreen> {
     _setDefaults();
   }
 
-  /// Creates fresh list of [DropdownMenuItem] widgets, given a list of [Unit]s.
+  @override
+  void didUpdateWidget(UnitConverterScreen old) {
+    super.didUpdateWidget(old);
+    if (old.category != widget.category) {
+      _createDropdownMenuItems();
+      _setDefaults();
+    }
+  }
+
   void _createDropdownMenuItems() {
     List<DropdownMenuItem> newItems = <DropdownMenuItem>[];
-    for (Unit unit in widget.units) {
+    for (Unit unit in widget.category.unitList) {
       newItems.add(DropdownMenuItem(
         value: unit.name,
         child: Text(
@@ -49,15 +56,13 @@ class _ConverterScreenState extends State<ConverterScreen> {
     });
   }
 
-  /// Sets the default values for the 'from' and 'to' [Dropdown]s.
   void _setDefaults() {
     setState(() {
-      _fromValue = widget.units[0];
-      _toValue = widget.units[1];
+      _fromValue = widget.category.unitList[0];
+      _toValue = widget.category.unitList[1];
     });
   }
 
-  /// Clean up conversion; trim trailing zeros, e.g. 5.500 -> 5.5, 10.0 -> 10
   String _format(double conversion) {
     var outputNum = conversion.toStringAsPrecision(7);
     if (outputNum.contains('.') && outputNum.endsWith('0')) {
@@ -85,8 +90,6 @@ class _ConverterScreenState extends State<ConverterScreen> {
       if (input.isEmpty) {
         _convertedValue = '';
       } else {
-        // Even though we are using the numerical keyboard, we still have to check
-        // for non-numerical input such as '5..0' or '6 -3'
         try {
           final inputDouble = double.parse(input);
           _showValidationError = false;
@@ -101,7 +104,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
   }
 
   Unit? _getUnit(String? unitName) {
-    return widget.units.firstWhere(
+    return widget.category.unitList.firstWhere(
       (Unit unit) => unit.name == unitName,
     );
   }
@@ -167,7 +170,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
             decoration: InputDecoration(
               labelStyle: Theme.of(context).textTheme.headline4,
               errorText: _showValidationError ? 'Invalid number entered' : null,
-              labelText: 'Add your value',
+              labelText: 'Add your value here',
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(0.0),
               ),
@@ -195,7 +198,7 @@ class _ConverterScreenState extends State<ConverterScreen> {
         children: [
           InputDecorator(
             decoration: InputDecoration(
-              labelText: 'Output',
+              labelText: 'Result',
               labelStyle: Theme.of(context).textTheme.headline4,
               border: OutlineInputBorder(
                 borderRadius: BorderRadius.circular(0.0),

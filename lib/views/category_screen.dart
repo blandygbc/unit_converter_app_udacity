@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:unit_converter_app_udacity/models/category.dart';
 import 'package:unit_converter_app_udacity/models/unit.dart';
+import 'package:unit_converter_app_udacity/views/backdrop.dart';
+import 'package:unit_converter_app_udacity/views/unit_converter_screen.dart';
+import 'package:unit_converter_app_udacity/widgets/category_tile.dart';
 
 final _backgroundColor = Colors.green.shade100;
 
@@ -12,6 +15,8 @@ class CategoryScreen extends StatefulWidget {
 }
 
 class _CategoryScreenState extends State<CategoryScreen> {
+  Category? _defaultCategory;
+  Category? _currentCategory;
   final _categories = <Category>[];
 
   static const _categoryNames = <String>[
@@ -65,28 +70,35 @@ class _CategoryScreenState extends State<CategoryScreen> {
   void initState() {
     super.initState();
     for (var i = 0; i < _categoryNames.length; i++) {
-      _categories.add(Category(
+      var category = Category(
         categoryName: _categoryNames[i],
         categoryColor: _baseColors[i],
         categoryIcon: Icons.cake,
         unitList: _retrieveUnitList(_categoryNames[i]),
-      ));
+      );
+      if (i == 0) {
+        _defaultCategory = category;
+      }
+      _categories.add(category);
     }
   }
 
-  Widget _buildCategoryWidgets(bool portrait) {
-    if (portrait) {
-      return ListView.builder(
-        itemCount: _categories.length,
-        itemBuilder: (BuildContext context, int index) => _categories[index],
-      );
-    } else {
-      return GridView.count(
-        crossAxisCount: 2,
-        childAspectRatio: 3.0,
-        children: _categories,
-      );
-    }
+  void _onCategoryTap(Category category) {
+    setState(() {
+      _currentCategory = category;
+    });
+  }
+
+  Widget _buildCategoryWidgets() {
+    return ListView.builder(
+      itemCount: _categories.length,
+      itemBuilder: (BuildContext context, int index) {
+        return CategoryTile(
+          category: _categories[index],
+          onTap: _onCategoryTap,
+        );
+      },
+    );
   }
 
   /// Returns a list of mock [Unit]s.
@@ -102,28 +114,23 @@ class _CategoryScreenState extends State<CategoryScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final listView = Container(
-      color: _backgroundColor,
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: _buildCategoryWidgets(true),
-    );
-
-    final appBar = AppBar(
-      elevation: 0,
-      title: const Text(
-        "Unit Converter",
-        style: TextStyle(
-          color: Colors.black,
-          fontSize: 30,
-        ),
+    final listView = Padding(
+      padding: const EdgeInsets.only(
+        left: 8.0,
+        right: 8.0,
+        bottom: 48.0,
       ),
-      centerTitle: true,
-      backgroundColor: _backgroundColor,
+      child: _buildCategoryWidgets(),
     );
 
-    return Scaffold(
-      appBar: appBar,
-      body: listView,
+    return Backdrop(
+      currentCategory: _currentCategory ?? _defaultCategory!,
+      frontPanel: _currentCategory == null
+          ? UnitConverterScreen(category: _defaultCategory!)
+          : UnitConverterScreen(category: _currentCategory!),
+      backPanel: listView,
+      frontTitle: const Text('Unit Converter'),
+      backTitle: const Text('Select a Category'),
     );
   }
 }
