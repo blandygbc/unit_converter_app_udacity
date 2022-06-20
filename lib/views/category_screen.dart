@@ -5,8 +5,6 @@ import 'package:unit_converter_app_udacity/views/backdrop.dart';
 import 'package:unit_converter_app_udacity/views/unit_converter_screen.dart';
 import 'package:unit_converter_app_udacity/widgets/category_tile.dart';
 
-final _backgroundColor = Colors.green.shade100;
-
 class CategoryScreen extends StatefulWidget {
   const CategoryScreen({Key? key}) : super(key: key);
 
@@ -89,16 +87,31 @@ class _CategoryScreenState extends State<CategoryScreen> {
     });
   }
 
-  Widget _buildCategoryWidgets() {
-    return ListView.builder(
-      itemCount: _categories.length,
-      itemBuilder: (BuildContext context, int index) {
-        return CategoryTile(
-          category: _categories[index],
-          onTap: _onCategoryTap,
-        );
-      },
-    );
+  Widget _buildCategoryWidgets(Orientation deviceOrientation) {
+    if (deviceOrientation == Orientation.portrait) {
+      return ListView.builder(
+        itemCount: _categories.length,
+        itemBuilder: (BuildContext context, int index) {
+          return CategoryTile(
+            category: _categories[index],
+            onTap: _onCategoryTap,
+          );
+        },
+      );
+    } else {
+      return GridView.count(
+        crossAxisSpacing: 2,
+        mainAxisSpacing: 2,
+        crossAxisCount: 2,
+        childAspectRatio: 3,
+        children: _categories.map((Category cat) {
+          return CategoryTile(
+            category: cat,
+            onTap: _onCategoryTap,
+          );
+        }).toList(),
+      );
+    }
   }
 
   /// Returns a list of mock [Unit]s.
@@ -120,7 +133,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         right: 8.0,
         bottom: 48.0,
       ),
-      child: _buildCategoryWidgets(),
+      child: _buildCategoryWidgets(MediaQuery.of(context).orientation),
     );
 
     return Backdrop(

@@ -77,8 +77,6 @@ class _BackdropTitle extends AnimatedWidget {
       style: Theme.of(context).primaryTextTheme.headline6!,
       softWrap: false,
       overflow: TextOverflow.ellipsis,
-      // Here, we do a custom cross fade between backTitle and frontTitle.
-      // This makes a smooth animation between the two texts.
       child: Stack(
         children: <Widget>[
           Opacity(
@@ -175,9 +173,6 @@ class _BackdropState extends State<Backdrop>
         _backdropKey.currentContext!.findRenderObject() as RenderBox;
     return renderBox.size.height;
   }
-
-  // By design: the panel can only be opened with a swipe. To close the panel
-  // the user must either tap its heading or the backdrop's menu icon.
 
   void _handleDragUpdate(DragUpdateDetails details) {
     if (_controller.isAnimating ||

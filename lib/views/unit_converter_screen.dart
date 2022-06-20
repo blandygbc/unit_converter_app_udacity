@@ -61,6 +61,9 @@ class _UnitConverterScreenState extends State<UnitConverterScreen> {
       _fromValue = widget.category.unitList[0];
       _toValue = widget.category.unitList[1];
     });
+    if (_inputValue != null) {
+      _updateConversion();
+    }
   }
 
   String _format(double conversion) {
@@ -224,8 +227,22 @@ class _UnitConverterScreenState extends State<UnitConverterScreen> {
     );
 
     return Padding(
-      padding: _padding,
-      child: converter,
-    );
+        padding: _padding,
+        child: OrientationBuilder(
+            builder: (BuildContext contex, Orientation orientation) {
+          if (orientation == Orientation.portrait) {
+            return SingleChildScrollView(
+              child: converter,
+            );
+          } else {
+            return SingleChildScrollView(
+              child: Center(
+                  child: SizedBox(
+                width: 450,
+                child: converter,
+              )),
+            );
+          }
+        }));
   }
 }
