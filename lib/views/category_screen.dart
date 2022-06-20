@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:unit_converter_app_udacity/models/category.dart';
 import 'package:unit_converter_app_udacity/models/unit.dart';
@@ -17,16 +19,16 @@ class _CategoryScreenState extends State<CategoryScreen> {
   Category? _currentCategory;
   final _categories = <Category>[];
 
-  static const _categoryNames = <String>[
-    'Length',
-    'Area',
-    'Volume',
-    'Mass',
-    'Time',
-    'Digital Storage',
-    'Energy',
-    'Currency',
-  ];
+  // static const _categoryNames = <String>[
+  //   'Length',
+  //   'Area',
+  //   'Volume',
+  //   'Mass',
+  //   'Time',
+  //   'Digital Storage',
+  //   'Energy',
+  //   'Currency',
+  // ];
 
   static const _baseColors = <ColorSwatch>[
     ColorSwatch(0xFF6AB7A8, {
@@ -65,19 +67,40 @@ class _CategoryScreenState extends State<CategoryScreen> {
   ];
 
   @override
-  void initState() {
-    super.initState();
-    for (var i = 0; i < _categoryNames.length; i++) {
-      var category = Category(
-        categoryName: _categoryNames[i],
-        categoryColor: _baseColors[i],
+  Future<void> didChangeDependencies() async {
+    super.didChangeDependencies();
+    if (_categories.isEmpty) {
+      await _retrieveLocalCategories();
+    }
+  }
+
+  Future<void> _retrieveLocalCategories() async {
+    final json = await DefaultAssetBundle.of(context)
+        .loadString('assets/data/regular_units.json');
+
+    final regularUnits = const JsonDecoder().convert(json);
+
+    if (regularUnits is! Map) {
+      throw ('Data retrieved from API is not a Map');
+    }
+    int categoryIndex = 0;
+    for (String categoryName in regularUnits.keys) {
+      final List<Unit> categoryUnits = regularUnits[categoryName]
+          .map<Unit>((dynamic unit) => Unit.fromJson(unit))
+          .toList();
+      Category category = Category(
+        categoryName: categoryName,
+        unitList: categoryUnits,
+        categoryColor: _baseColors[categoryIndex],
         categoryIcon: Icons.cake,
-        unitList: _retrieveUnitList(_categoryNames[i]),
       );
-      if (i == 0) {
-        _defaultCategory = category;
-      }
-      _categories.add(category);
+      setState(() {
+        if (categoryIndex == 0) {
+          _defaultCategory = category;
+        }
+        _categories.add(category);
+      });
+      categoryIndex++;
     }
   }
 
@@ -114,19 +137,17 @@ class _CategoryScreenState extends State<CategoryScreen> {
     }
   }
 
-  /// Returns a list of mock [Unit]s.
-  List<Unit> _retrieveUnitList(String categoryName) {
-    return List.generate(10, (int i) {
-      i += 1;
-      return Unit(
-        name: '$categoryName Unit $i',
-        conversion: i.toDouble(),
-      );
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
+    if (_categories.isEmpty) {
+      return const Center(
+        child: SizedBox(
+          height: 180.0,
+          width: 180.0,
+          child: CircularProgressIndicator(),
+        ),
+      );
+    }
     final listView = Padding(
       padding: const EdgeInsets.only(
         left: 8.0,

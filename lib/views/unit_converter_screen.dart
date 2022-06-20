@@ -21,6 +21,7 @@ class _UnitConverterScreenState extends State<UnitConverterScreen> {
   String _convertedValue = '';
   List<DropdownMenuItem>? _unitMenuItems;
   bool _showValidationError = false;
+  final _inputKey = GlobalKey(debugLabel: 'inputText');
 
   static const _padding = EdgeInsets.all(16.0);
 
