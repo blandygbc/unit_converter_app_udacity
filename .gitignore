@@ -9,6 +9,7 @@
 .history
 .svn/
 migrate_working_dir/
+lib/work_self_sign_certificate.dart
 
 # IntelliJ related
 *.iml

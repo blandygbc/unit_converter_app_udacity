@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:unit_converter_app_udacity/constants/api_constants.dart';
 import 'package:unit_converter_app_udacity/models/category.dart';
 import 'package:unit_converter_app_udacity/models/unit.dart';
+import 'package:unit_converter_app_udacity/utils/services/rest_api.dart';
 
 class UnitConverterScreen extends StatefulWidget {
   final Category category;
@@ -82,11 +84,21 @@ class _UnitConverterScreenState extends State<UnitConverterScreen> {
     return outputNum;
   }
 
-  void _updateConversion() {
-    setState(() {
-      _convertedValue = _format(
-          _inputValue! * (_toValue!.conversion! / _fromValue!.conversion!));
-    });
+  Future<void> _updateConversion() async {
+    if (widget.category.categoryName == ApiConstants.apiCategory['name']) {
+      final api = RestApi();
+      final conversion = await api.convert(ApiConstants.apiCategory['route'],
+          _inputValue.toString(), _fromValue!.name, _toValue!.name);
+
+      setState(() {
+        _convertedValue = _format(conversion!);
+      });
+    } else {
+      setState(() {
+        _convertedValue = _format(
+            _inputValue! * (_toValue!.conversion! / _fromValue!.conversion!));
+      });
+    }
   }
 
   void _updateInputValue(String input) {
@@ -218,8 +230,7 @@ class _UnitConverterScreenState extends State<UnitConverterScreen> {
       ),
     );
 
-    final converter = Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
+    final converter = ListView(
       children: [
         input,
         arrows,
@@ -232,16 +243,13 @@ class _UnitConverterScreenState extends State<UnitConverterScreen> {
         child: OrientationBuilder(
             builder: (BuildContext contex, Orientation orientation) {
           if (orientation == Orientation.portrait) {
-            return SingleChildScrollView(
-              child: converter,
-            );
+            return converter;
           } else {
-            return SingleChildScrollView(
-              child: Center(
-                  child: SizedBox(
-                width: 450,
+            return Center(
+              child: SizedBox(
+                width: 450.0,
                 child: converter,
-              )),
+              ),
             );
           }
         }));

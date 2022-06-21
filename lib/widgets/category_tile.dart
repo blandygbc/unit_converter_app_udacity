@@ -3,7 +3,6 @@ import 'package:unit_converter_app_udacity/models/category.dart';
 
 const _rowHeight = 100.0;
 final _borderRadius = BorderRadius.circular(_rowHeight / 2);
-const _iconSize = 60.0;
 
 class CategoryTile extends StatelessWidget {
   final Category category;
@@ -36,7 +35,7 @@ class CategoryTile extends StatelessWidget {
                   child: Image.asset(category.categoryIcon),
                   // Icon(
                   //   category.categoryIcon,
-                  //   size: _iconSize,
+                  //   size: AppConstants.iconSize,
                   // ),
                 ),
                 Center(

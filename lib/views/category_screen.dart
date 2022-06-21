@@ -1,8 +1,12 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:unit_converter_app_udacity/constants/api_constants.dart';
+import 'package:unit_converter_app_udacity/constants/app_constants.dart';
+import 'package:unit_converter_app_udacity/constants/assets_constants.dart';
 import 'package:unit_converter_app_udacity/models/category.dart';
 import 'package:unit_converter_app_udacity/models/unit.dart';
+import 'package:unit_converter_app_udacity/utils/services/rest_api.dart';
 import 'package:unit_converter_app_udacity/views/backdrop.dart';
 import 'package:unit_converter_app_udacity/views/unit_converter_screen.dart';
 import 'package:unit_converter_app_udacity/widgets/category_tile.dart';
@@ -19,83 +23,18 @@ class _CategoryScreenState extends State<CategoryScreen> {
   Category? _currentCategory;
   final _categories = <Category>[];
 
-  // static const _categoryNames = <String>[
-  //   'Length',
-  //   'Area',
-  //   'Volume',
-  //   'Mass',
-  //   'Time',
-  //   'Digital Storage',
-  //   'Energy',
-  //   'Currency',
-  // ];
-
-  static const _baseColors = <ColorSwatch>[
-    ColorSwatch(0xFF6AB7A8, {
-      'highlight': Color(0xFF6AB7A8),
-      'splash': Color(0xFF0ABC9B),
-    }),
-    ColorSwatch(0xFFFFD28E, {
-      'highlight': Color(0xFFFFD28E),
-      'splash': Color(0xFFFFA41C),
-    }),
-    ColorSwatch(0xFFFFB7DE, {
-      'highlight': Color(0xFFFFB7DE),
-      'splash': Color(0xFFF94CBF),
-    }),
-    ColorSwatch(0xFF8899A8, {
-      'highlight': Color(0xFF8899A8),
-      'splash': Color(0xFFA9CAE8),
-    }),
-    ColorSwatch(0xFFEAD37E, {
-      'highlight': Color(0xFFEAD37E),
-      'splash': Color(0xFFFFE070),
-    }),
-    ColorSwatch(0xFF81A56F, {
-      'highlight': Color(0xFF81A56F),
-      'splash': Color(0xFF7CC159),
-    }),
-    ColorSwatch(0xFFD7C0E2, {
-      'highlight': Color(0xFFD7C0E2),
-      'splash': Color(0xFFCA90E5),
-    }),
-    ColorSwatch(0xFFCE9A9A, {
-      'highlight': Color(0xFFCE9A9A),
-      'splash': Color(0xFFF94D56),
-      'error': Color(0xFF912D2D),
-    }),
-  ];
-  static const _googleIcons = <IconData>[
-    Icons.straighten_outlined,
-    Icons.settings_overscan_outlined,
-    Icons.balance_outlined,
-    Icons.scale,
-    Icons.schedule,
-    Icons.sd_card,
-    Icons.electric_bolt,
-  ];
-  static const _icons = <String>[
-    'assets/icons/length.png',
-    'assets/icons/area.png',
-    'assets/icons/volume.png',
-    'assets/icons/mass.png',
-    'assets/icons/time.png',
-    'assets/icons/digital_storage.png',
-    'assets/icons/power.png',
-    'assets/icons/currency.png',
-  ];
-
   @override
   Future<void> didChangeDependencies() async {
     super.didChangeDependencies();
     if (_categories.isEmpty) {
       await _retrieveLocalCategories();
+      await _retrieveApiCategory();
     }
   }
 
   Future<void> _retrieveLocalCategories() async {
     final json = await DefaultAssetBundle.of(context)
-        .loadString('assets/data/regular_units.json');
+        .loadString(AssetsConstants.localSorageDataLocation);
 
     final regularUnits = const JsonDecoder().convert(json);
 
@@ -110,8 +49,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
       Category category = Category(
         categoryName: categoryName,
         unitList: categoryUnits,
-        categoryColor: _baseColors[categoryIndex],
-        categoryIcon: _icons[categoryIndex],
+        categoryColor: AppConstants.baseColors[categoryIndex],
+        categoryIcon: AssetsConstants.icons[categoryIndex],
       );
       setState(() {
         if (categoryIndex == 0) {
@@ -120,6 +59,34 @@ class _CategoryScreenState extends State<CategoryScreen> {
         _categories.add(category);
       });
       categoryIndex++;
+    }
+  }
+
+  Future<void> _retrieveApiCategory() async {
+    setState(() {
+      _categories.add(Category(
+        categoryName: ApiConstants.apiCategory['name']!,
+        unitList: [],
+        categoryColor: AppConstants.baseColors.last,
+        categoryIcon: AssetsConstants.icons.last,
+      ));
+    });
+    final api = RestApi();
+    final jsonUnits = await api.getUnits(ApiConstants.apiCategory['route']);
+    if (jsonUnits != null) {
+      final units = <Unit>[];
+      for (var unit in jsonUnits) {
+        units.add(Unit.fromJson(unit));
+      }
+      setState(() {
+        _categories.removeLast();
+        _categories.add(Category(
+          categoryName: ApiConstants.apiCategory['name']!,
+          unitList: units,
+          categoryColor: AppConstants.baseColors.last,
+          categoryIcon: AssetsConstants.icons.last,
+        ));
+      });
     }
   }
 
@@ -142,8 +109,8 @@ class _CategoryScreenState extends State<CategoryScreen> {
       );
     } else {
       return GridView.count(
-        crossAxisSpacing: 2,
-        mainAxisSpacing: 2,
+        // crossAxisSpacing: 2,
+        // mainAxisSpacing: 2,
         crossAxisCount: 2,
         childAspectRatio: 3,
         children: _categories.map((Category cat) {

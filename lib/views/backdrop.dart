@@ -116,7 +116,7 @@ class Backdrop extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _BackdropState createState() => _BackdropState();
+  State<Backdrop> createState() => _BackdropState();
 }
 
 class _BackdropState extends State<Backdrop>
