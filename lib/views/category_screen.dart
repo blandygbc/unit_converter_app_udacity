@@ -65,6 +65,25 @@ class _CategoryScreenState extends State<CategoryScreen> {
       'error': Color(0xFF912D2D),
     }),
   ];
+  static const _googleIcons = <IconData>[
+    Icons.straighten_outlined,
+    Icons.settings_overscan_outlined,
+    Icons.balance_outlined,
+    Icons.scale,
+    Icons.schedule,
+    Icons.sd_card,
+    Icons.electric_bolt,
+  ];
+  static const _icons = <String>[
+    'assets/icons/length.png',
+    'assets/icons/area.png',
+    'assets/icons/volume.png',
+    'assets/icons/mass.png',
+    'assets/icons/time.png',
+    'assets/icons/digital_storage.png',
+    'assets/icons/power.png',
+    'assets/icons/currency.png',
+  ];
 
   @override
   Future<void> didChangeDependencies() async {
@@ -92,7 +111,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
         categoryName: categoryName,
         unitList: categoryUnits,
         categoryColor: _baseColors[categoryIndex],
-        categoryIcon: Icons.cake,
+        categoryIcon: _icons[categoryIndex],
       );
       setState(() {
         if (categoryIndex == 0) {
