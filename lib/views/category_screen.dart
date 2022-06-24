@@ -101,9 +101,13 @@ class _CategoryScreenState extends State<CategoryScreen> {
       return ListView.builder(
         itemCount: _categories.length,
         itemBuilder: (BuildContext context, int index) {
+          var category = _categories[index];
           return CategoryTile(
-            category: _categories[index],
-            onTap: _onCategoryTap,
+            category: category,
+            onTap: category.categoryName == ApiConstants.apiCategory['name'] &&
+                    category.unitList.isEmpty
+                ? null
+                : _onCategoryTap,
           );
         },
       );
@@ -116,7 +120,10 @@ class _CategoryScreenState extends State<CategoryScreen> {
         children: _categories.map((Category cat) {
           return CategoryTile(
             category: cat,
-            onTap: _onCategoryTap,
+            onTap: cat.categoryName == ApiConstants.apiCategory['name'] &&
+                    cat.unitList.isEmpty
+                ? null
+                : _onCategoryTap,
           );
         }).toList(),
       );

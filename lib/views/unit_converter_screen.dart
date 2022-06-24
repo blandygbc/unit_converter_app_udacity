@@ -23,7 +23,8 @@ class _UnitConverterScreenState extends State<UnitConverterScreen> {
   String _convertedValue = '';
   List<DropdownMenuItem>? _unitMenuItems;
   bool _showValidationError = false;
-  // final _inputKey = GlobalKey(debugLabel: 'inputText');
+  final _inputKey = GlobalKey(debugLabel: 'inputText');
+  bool _showErrorUI = false;
 
   static const _padding = EdgeInsets.all(16.0);
 
@@ -89,10 +90,16 @@ class _UnitConverterScreenState extends State<UnitConverterScreen> {
       final api = RestApi();
       final conversion = await api.convert(ApiConstants.apiCategory['route'],
           _inputValue.toString(), _fromValue!.name, _toValue!.name);
-
-      setState(() {
-        _convertedValue = _format(conversion!);
-      });
+      if (conversion == null) {
+        setState(() {
+          _showErrorUI = true;
+        });
+      } else {
+        setState(() {
+          _showErrorUI = false;
+          _convertedValue = _format(conversion);
+        });
+      }
     } else {
       setState(() {
         _convertedValue = _format(
@@ -176,6 +183,37 @@ class _UnitConverterScreenState extends State<UnitConverterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    if ((widget.category.categoryName == ApiConstants.apiCategory['name'] &&
+        _showErrorUI)) {
+      return SingleChildScrollView(
+        child: Container(
+          margin: _padding,
+          padding: _padding,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(16.0),
+            color: widget.category.categoryColor['error'],
+          ),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: [
+              const Icon(
+                Icons.error_outline,
+                size: 180.0,
+                color: Colors.white,
+              ),
+              Text(
+                "Houston, we have a problem!\nWe can't connect right now!",
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headline5!.copyWith(
+                      color: Colors.white,
+                    ),
+              ),
+            ],
+          ),
+        ),
+      );
+    }
     final input = Padding(
       padding: _padding,
       child: Column(
